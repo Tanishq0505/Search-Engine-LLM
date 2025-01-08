@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
 
-  # to run this workflow manually from the Actions tab
+  # To run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -11,17 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Step 1: Check out the repository
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           lfs: true
 
       # Step 2: Debug Token Substitution
       - name: Debug Token Substitution
-        run: echo "Token substitution test: ${{ secrets.HF_TOKEN }}"
-      
+        run: |
+          echo "Token substitution test: ${{ secrets.HF_TOKEN }}"
+
       # Step 3: Set the correct remote and push to Hugging Face hub
-      - name: Push to hub
+      - name: Push to Hugging Face Hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
