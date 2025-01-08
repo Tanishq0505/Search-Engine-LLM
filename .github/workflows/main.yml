@@ -18,20 +18,27 @@ jobs:
       # Step 2: Debug Token Substitution
       - name: Debug Token Substitution
         run: |
-          echo "Token substitution test: ${HF_TOKEN:0:5}... (truncated for security)"
+          if [ -z "${HF_TOKEN}" ]; then
+            echo "HF_TOKEN is not set or empty. Please check your GitHub secrets configuration."
+            exit 1
+          else
+            echo "HF_TOKEN is set. Token starts with: ${HF_TOKEN:0:5}... (truncated for security)"
+          fi
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
 
-      # Step 3: Test Network Connectivity
-      - name: Test Network Connectivity
-        run: |
-          ping -c 4 huggingface.co
-
-      # Step 4: Push to Hugging Face Hub
+      # Step 3: Push to Hugging Face Hub
       - name: Push to Hugging Face Hub
         run: |
+          # Set the correct remote URL
           git remote set-url origin https://huggingface.co/spaces/Tanishq0505/Search_Engine_llm
+          
+          # Verify the remote configuration
+          echo "Verifying remote configuration:"
           git remote -v
+          
+          # Push changes to the Hugging Face hub
+          echo "Pushing changes to Hugging Face Hub..."
           git push --force https://$HF_TOKEN@huggingface.co/spaces/Tanishq0505/Search_Engine_llm main
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
