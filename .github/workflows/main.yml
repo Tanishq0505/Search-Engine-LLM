@@ -10,15 +10,26 @@ jobs:
   sync-to-hub:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Check out the repository
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           lfs: true
+
+      # Step 2: Debug Token Substitution
+      - name: Debug Token Substitution
+        run: echo "Token substitution test: ${{ secrets.HF_TOKEN }}"
+      
+      # Step 3: Set the correct remote and push to Hugging Face hub
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
+          # Ensure the remote is set to the Hugging Face space
+          git remote set-url origin https://huggingface.co/spaces/Tanishq0505/Search_Engine_llm
+          
+          # Verify the remote configuration
           git remote -v
+          
+          # Push changes to the Hugging Face hub
           git push --force https://${{ secrets.HF_TOKEN }}@huggingface.co/spaces/Tanishq0505/Search_Engine_llm main
-
-
